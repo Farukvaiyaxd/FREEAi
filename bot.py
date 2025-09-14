@@ -1,5 +1,3 @@
-# bot.py - Telegram BIN Bot (pyTelegramBotAPI version)
-# Usage: set TELEGRAM_BOT_TOKEN environment variable (Railway variables)
 import os
 import requests
 import html
