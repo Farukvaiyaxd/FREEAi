@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="bn">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সর্বকালের সেরা ফানি বয়স ক্যালকুলেটর!</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Baloo+Da+2:wght@400;600;700&display=swap');
+ 
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Baloo Da 2', cursive;
+        }
+ 
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            padding: 20px;
+            overflow: hidden;
+        }
+ 
+        .card {
+            background: white;
+            width: 90%;
+            max-width: 450px;
+            padding: 40px;
+            border-radius: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.25);
+            text-align: center;
+            border: 5px solid #fff;
+            animation: bounceIn 1s ease-out;
+        }
+ 
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0.5);
+                opacity: 0;
+            }
+ 
+            50% {
+                transform: scale(1.05);
+            }
+ 
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+ 
+        .card h2 {
+            color: #333;
+            margin-bottom: 30px;
+            font-size: 32px;
+            font-weight: 700;
+            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+        }
+ 
+        .card input {
+            width: 100%;
+            padding: 15px;
+            border: 3px dashed #f5576c;
+            border-radius: 20px;
+            font-size: 20px;
+            margin-bottom: 30px;
+            text-align: center;
+            font-weight: 600;
+        }
+ 
+        .card input:focus {
+            outline: none;
+            border-color: #f093fb;
+        }
+ 
+        .card button {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #ff6a88, #ff99ac);
+            color: white;
+            border: none;
+            border-radius: 20px;
+            font-size: 24px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+ 
+        .card button:hover {
+            animation: shake 0.5s;
+        }
+ 
+        @keyframes shake {
+ 
+            0%,
+            100% {
+                transform: translateX(0);
+            }
+ 
+            10%,
+            30%,
+            50%,
+            70%,
+            90% {
+                transform: translateX(-10px);
+            }
+ 
+            20%,
+            40%,
+            60%,
+            80% {
+                transform: translateX(10px);
+            }
+        }
+ 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
+        }
+ 
+        .modal-content {
+            background: #fff;
+            margin: 10% auto;
+            padding: 40px;
+            border-radius: 30px;
+            width: 90%;
+            max-width: 550px;
+            text-align: center;
+            animation: zoomIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            border: 5px solid white;
+        }
+ 
+        @keyframes zoomIn {
+            from {
+                transform: scale(0.3);
+                opacity: 0;
+            }
+ 
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+ 
+        .age-tagline {
+            font-size: 26px;
+            font-weight: 700;
+            margin-bottom: 25px;
+            padding: 10px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #a29bfe, #74b9ff);
+            color: white;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+ 
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            color: #ff5252;
+            font-size: 40px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+ 
+        #popup-result {
+            font-size: 22px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+        }
+ 
+        #funny-message {
+            font-size: 24px;
+            color: #c0392b;
+            font-weight: 700;
+            margin-top: 20px;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+ 
+        .highlight {
+            color: #ff1744;
+            font-size: 28px;
+        }
+ 
+        #confetti-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            pointer-events: none;
+        }
+    </style>
+</head>
+ 
+<body>
+ 
+    <canvas id="confetti-canvas"></canvas>
+ 
+    <div class="card">
+        <h2>সর্বকালের সেরা ফানি বয়স ক্যালকুলেটর! 🤣</h2>
+        <input type="date" id="dob">
+        <button onclick="calculateAge()">🔥 বয়স কত, বলে দিন! 🔥</button>
+    </div>
+ 
+    <div id="resultModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">×</span>
+            <h3 id="age-tagline" class="age-tagline"></h3>
+            <div id="popup-result"></div>
+            <p id="funny-message"></p>
+        </div>
+    </div>
+ 
+    <script>
+        const toBengaliNumber = (num) => {
+            const bengaliDigits = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+            return String(num).replace(/\d/g, (digit) => bengaliDigits[digit]);
+        };
+ 
+        function calculateAge() {
+            const dobValue = document.getElementById("dob").value;
+            if (!dobValue) {
+                alert("⚠️ মশাই, আগে জন্ম তারিখটা তো দিন!");
+                return;
+            }
+ 
+            launchConfetti();
+ 
+            const dobDate = new Date(dobValue);
+            const today = new Date();
+ 
+            let years = today.getFullYear() - dobDate.getFullYear();
+            let months = today.getMonth() - dobDate.getMonth();
+            let days = today.getDate() - dobDate.getDate();
+ 
+            if (days < 0) {
+                months--;
+                days += new Date(today.getFullYear(), today.getMonth(), 0).getDate();
+            }
+            if (months < 0) {
+                years--;
+                months += 12;
+            }
+ 
+            let funnyMessage = "";
+            let ageTagline = "";
+ 
+            if (years < 0) {
+                ageTagline = "🛸 ভবিষ্যৎ ভ্রমণকারী! 🛸";
+                funnyMessage = "টাইম মেশিনের কী অবস্থা?";
+                years = months = days = 0;
+            } else if (years <= 5) {
+                ageTagline = "🍼 দুধ-ভাতের যুগ 🍼";
+                funnyMessage = "ওলে বাবা লে! কচি খোকা!";
+            } else if (years <= 10) {
+                ageTagline = "🎒 স্কুল পালানোর দিন 🎒";
+                funnyMessage = "এই পিচ্চি, পড়তে বস!";
+            } else if (years <= 15) {
+                ageTagline = "💕 টিনএজ ক্রাশের কাল 💕";
+                funnyMessage = "ফেসবুকে কার ছবিতে লাভ রিয়্যাক্ট দিচ্ছ?";
+            } else if (years <= 20) {
+                ageTagline = "🤘 কলেজ ক্যান্টিনের রাজা/রানী 🤘";
+                funnyMessage = "প্রক্সি দিতে গিয়ে ধরা খেয়েছো কখনো?";
+            } else if (years <= 25) {
+                ageTagline = "🏃 চাকরি বনাম স্বপ্নের লড়াই 🏃";
+                funnyMessage = "সিভি বানাতে বানাতে জীবনটাই সিভিয়ার!";
+            } else if (years <= 30) {
+                ageTagline = "💍 বিয়ের চাপ আর হাজারো আবদার 💍";
+                funnyMessage = "আত্মীয়-স্বজনরা কি 'কবে বিয়ে করবি' বলা শুরু করেছে?";
+            } else if (years <= 35) {
+                ageTagline = "💸 EMI আর বাচ্চার ডায়াপারের যুগ 💸";
+                funnyMessage = "মাস শেষ হওয়ার আগেই পকেট গড়ের মাঠ!";
+            } else if (years <= 40) {
+                ageTagline = "🍔 মাথা ভর্তি চিন্তা আর ভুঁড়ির মহাকাল! 🍔";
+                funnyMessage = "ব্যায়াম করার কথা শুধু ভাবলেই হবে না!";
+            } else if (years <= 45) {
+                ageTagline = "👓 চালশে যখন দরজায় কড়া নাড়ে 👓";
+                funnyMessage = "ছোট লেখাগুলো ঝাপসা দেখছেন নাকি?";
+            } else if (years <= 50) {
+                ageTagline = "👴 আঙ্কেল/আন্টি ডাক শোনার প্রস্তুতি 👴";
+                funnyMessage = "দোকানের ছেলেটাও 'দাদা' থেকে 'আঙ্কেল' বলা শুরু করেছে!";
+            } else if (years <= 55) {
+                ageTagline = "💊 ডাক্তারের ভিজিটিং কার্ড জমানোর সময় 💊";
+                funnyMessage = "সুগার, প্রেশার সব কন্ট্রোলে তো?";
+            } else if (years <= 60) {
+                ageTagline = "🎉 রিটায়ারমেন্টের দিন গোনা 🎉";
+                funnyMessage = "আর কিছুদিন পরেই আরাম আর আরাম!";
+            } else if (years <= 65) {
+                ageTagline = "🍭 পেনশনের টাকায় নাতি-নাতনিকে আদর 🍭";
+                funnyMessage = "ওরাই তো এখন জীবনের সেরা ইনভেস্টমেন্ট!";
+            } else if (years <= 70) {
+                ageTagline = "☕️ বিকেলে চায়ের দোকানে আড্ডা ☕️";
+                funnyMessage = "দেশের রাজনীতি নিয়ে আপনার কী মত?";
+            } else {
+                ageTagline = "💯 জীবনের সেঞ্চুরির পথে! 💯";
+                funnyMessage = "আপনি তো আমাদের অনুপ্রেরণা!";
+            }
+ 
+            document.getElementById("age-tagline").innerText = ageTagline;
+            document.getElementById("popup-result").innerHTML =
+                `আপনার বয়স হলো <span class="highlight">${toBengaliNumber(years)}</span> বছর, 
+         <span class="highlight">${toBengaliNumber(months)}</span> মাস, 
+         এবং <span class="highlight">${toBengaliNumber(days)}</span> দিন।`;
+            document.getElementById("funny-message").innerText = funnyMessage;
+ 
+            document.getElementById("resultModal").style.display = "block";
+        }
+ 
+        function closeModal() {
+            document.getElementById("resultModal").style.display = "none";
+        }
+ 
+        window.onclick = function(event) {
+            const modal = document.getElementById("resultModal");
+            if (event.target == modal) {
+                modal.style.display = "none";
+            }
+        }
+ 
+        // Confetti Effect Script (unchanged from previous version)
+        const confettiCanvas = document.getElementById('confetti-canvas');
+        const confettiCtx = confettiCanvas.getContext('2d');
+        let confettiParticles = [];
+ 
+        function launchConfetti() {
+            confettiCanvas.width = window.innerWidth;
+            confettiCanvas.height = window.innerHeight;
+            confettiParticles = [];
+            for (let i = 0; i < 150; i++) {
+                confettiParticles.push(createConfettiParticle());
+            }
+            animateConfetti();
+        }
+ 
+        function createConfettiParticle() {
+            const x = Math.random() * confettiCanvas.width;
+            const y = -20;
+            const size = Math.random() * 15 + 5;
+            const color = `hsl(${Math.random() * 360}, 100%, 50%)`;
+            const speedX = Math.random() * 10 - 5;
+            const speedY = Math.random() * 5 + 2;
+            return {
+                x,
+                y,
+                size,
+                color,
+                speedX,
+                speedY
+            };
+        }
+ 
+        function animateConfetti() {
+            confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            let activeParticles = [];
+            confettiParticles.forEach(p => {
+                p.y += p.speedY;
+                p.x += p.speedX;
+                p.speedY += 0.05;
+                if (p.y < confettiCanvas.height) {
+                    confettiCtx.fillStyle = p.color;
+                    confettiCtx.fillRect(p.x, p.y, p.size, p.size);
+                    activeParticles.push(p);
+                }
+            });
+            confettiParticles = activeParticles;
+            if (confettiParticles.length > 0) {
+                requestAnimationFrame(animateConfetti);
+            } else {
+                confettiCtx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
+            }
+        }
+    </script>
+ 
+</body>
+ 
+</html>
